@@ -24,3 +24,21 @@ class CustomUserAdmin(UserAdmin):
             }
         ),
     )
+
+    # list_display = (
+    #     "username",
+    #     "first_name",
+    #     "last_name",
+    #     "email",
+    #     "preference",
+    #     "language",
+    #     "fav_book_genre",
+    #     "fav_movie_genre",
+    # )
+
+    # list_filter = (
+    #     "preference",
+    #     "language",
+    #     "fav_book_genre",
+    #     "fav_movie_genre",
+    # )
