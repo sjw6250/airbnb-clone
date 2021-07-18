@@ -58,8 +58,8 @@ class Photo(core_models.TimeStampedModel):
     """ Photo Model Definition """
 
     caption = models.CharField(max_length=80)
-    file = models.ImageField()
-    room = models.ForeignKey("Room", on_delete=CASCADE)
+    file = models.ImageField(upload_to = "room_photos")
+    room = models.ForeignKey("Room",related_name="photos", on_delete=CASCADE)
 
     def __str__(self):
         return self.caption
@@ -81,11 +81,18 @@ class Room(core_models.TimeStampedModel):
     check_in = models.TimeField(blank=True, null=True)
     check_out = models.TimeField(blank=True, null=True)
     instant_book = models.BooleanField(default=False)
-    host = models.ForeignKey("users.User", on_delete=models.CASCADE,blank=True, null=True)
-    room_type = models.ForeignKey("RoomType", on_delete= models.SET_NULL, blank=True, null=True)
-    amenities = models.ManyToManyField("Amenity", blank=True)
-    facilities = models.ManyToManyField("Facility", blank=True)
-    house_rules = models.ManyToManyField("HouseRule", blank=True)
+    host = models.ForeignKey("users.User", related_name="rooms", on_delete=models.CASCADE,blank=True, null=True)
+    room_type = models.ForeignKey("RoomType",related_name="rooms", on_delete= models.SET_NULL, blank=True, null=True)
+    amenities = models.ManyToManyField("Amenity",related_name="rooms", blank=True)
+    facilities = models.ManyToManyField("Facility",related_name="rooms", blank=True)
+    house_rules = models.ManyToManyField("HouseRule",related_name="rooms", blank=True)
 
     def __str__(self):
         return self.name
+
+    def total_rating(self):
+        all_reviews = self.reviews.all()
+        all_ratings = 0
+        for review in all_reviews:
+            all_ratings+=review.rating_average()
+        return all_ratings/len(all_reviews)

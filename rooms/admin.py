@@ -8,7 +8,13 @@ from . import models
 class ItemAdmin(admin.ModelAdmin):
 
     """Item Admin Definition"""
+    list_display = (
+        "name",
+        "used_by",
+    )
 
+    def used_by(self,object):
+        return object.rooms.count()
     pass
 
 
@@ -16,6 +22,7 @@ class ItemAdmin(admin.ModelAdmin):
 class PhotoAdmin(admin.ModelAdmin):
 
     """ """
+
 
     pass
 
@@ -68,8 +75,10 @@ class RoomAdmin(admin.ModelAdmin):
         "baths",
         "check_in",
         "check_out",
-        "count_amenities",
         "instant_book",
+        "count_amenities",
+        "count_photos",
+        "total_rating",
     )
 
     ordering = ("name", "price")
@@ -95,7 +104,7 @@ class RoomAdmin(admin.ModelAdmin):
     )
 
     def count_amenities(self, object):
-        print(object.amenities.all())
-        return "1234"
+        return object.amenities.count()
 
-    count_amenities.short_description = "test"
+    def count_photos(self, object):
+        return object.photos.count()
