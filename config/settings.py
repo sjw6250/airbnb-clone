@@ -135,4 +135,8 @@ STATIC_URL = "/static/"
 
 AUTH_USER_MODEL = "users.User"
 
+# 파일이 올라갈 위치
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
+
+# 파일을 불러올 떄 사용할 URL
+MEDIA_URL = "/media/"
