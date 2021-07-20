@@ -35,8 +35,17 @@ class PhotoAdmin(admin.ModelAdmin):
     get_thumbnail.short_description = "Thumbnail"
 
 
+# 사진 등록을 등록 리스트에서
+class PhotoInline(admin.TabularInline):
+
+    model = models.Photo
+
+
 @admin.register(models.Room)
 class RoomAdmin(admin.ModelAdmin):
+
+    # 사진 등록을 등록 리스트에서
+    inlines = (PhotoInline,)
 
     """Room Admin Definition"""
 
@@ -103,6 +112,7 @@ class RoomAdmin(admin.ModelAdmin):
         "country",
     )
 
+    # 아이디 리스트가 줄줄이 안나오고 팝업에서 선택할 수 있게
     raw_id_fields = ("host",)
 
     search_fields = ("=city", "^host__username")

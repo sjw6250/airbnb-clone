@@ -39,7 +39,11 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = ["django_countries"]
+THIRD_PARTY_APPS = [
+    "django_countries",
+    # "pipenv install django_seed" 명령어로 설치하고 여기에 넣어줌
+    "django_seed",
+]
 
 PROJECT_APPS = [
     "core.apps.CoreConfig",
