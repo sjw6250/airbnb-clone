@@ -139,6 +139,8 @@ cython_debug/
 
 uploads/
 
+node_modules/
+
 # Migration file for Dev
 **/migrations/**
 !**/migrations
