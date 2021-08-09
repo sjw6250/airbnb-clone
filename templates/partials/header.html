@@ -1,6 +1,8 @@
-<header>
-    {% include "partials/nav.html" %}
-    <form method="get" action="{% url "rooms:search" %}">
-        <input name="city" placeholder="Search by City" />
-    </form>
+<header class="container max-w-full">
+    <div>
+        {% include "partials/nav.html" %}
+        <form method="get" action="{% url "rooms:search" %}">
+            <input name="city" placeholder="Search by City" />
+        </form>
+    </div>
 </header>
