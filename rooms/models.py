@@ -106,7 +106,9 @@ class Room(core_models.TimeStampedModel):
 
     # save override, "saver" 치면 자동 생성 (설치된 Extention django snippets 가 자동생성)
     def save(self, *args, **kwargs):
-        self.city = str.capitalize(self.city)
+        ## descriptor 'capitalize' for 'str' objects doesn't apply to a 'NoneType' object
+        ## 위에처럼 나와서 일단 아래 주석 처리
+        ##self.city = str.capitalize(self.city)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -123,3 +125,8 @@ class Room(core_models.TimeStampedModel):
                 all_ratings += review.rating_average()
             return round(all_ratings / len(all_reviews), 2)
         return 0
+
+    def first_photo(self):
+        (photo,) = self.photos.all()[:1]
+        print(photo)
+        return photo.file.url
