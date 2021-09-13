@@ -7,28 +7,32 @@
 
 {% block content %}
 
-    <div class="container mx-auto">
+    <div class="container mx-auto pb-10">
 
         <div class="rounded-xl bg-gray-800  -mx-40  h-50vh mt-32 mb-24 bg-cover bg-center" style="background-image:url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFL1JLUAxG488gg_QAbbKjubYyxGbN4YCueQ&usqp=CAU)"></div>
 
-        <div class="flex flex-wrap -mx-40">
+        <div class="flex flex-wrap -mx-40 mb-10">
             {% for room in rooms  %}
                 {% include 'partials/room_card.html' with room=room %}
             {% endfor %}
         </div>
-        <h5>
-        {% if page_obj.has_previous %}
-            <a href="?page={{page_obj.previous_page_number}}">Previous</a>
-        {% endif %}
-    
-        Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+        <div class="flex items-center justify-center mx-auto container">
+            {% if page_obj.has_previous %}
+                <a href="?page={{page_obj.previous_page_number}}" class="text-teal-500">
+                    <i class="fas fa-arrow-left fa-lg"></i>
+                </a>
+            {% endif %}
         
-        {% if page_obj.has_next  %}
-            <a href="?page={{page_obj.next_page_number}}">Next</a>
-        {% endif %}
-    
-    
-        </h5>
+            <span class="mx-3 font-medium text-lg">
+                {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+            </span>
+            
+            {% if page_obj.has_next  %}
+                <a href="?page={{page_obj.next_page_number}}" class="text-teal-500">
+                    <i class="fas fa-arrow-right fa-lg"></i>
+                </a>
+            {% endif %}
+        </div>
     </div>
 
     
