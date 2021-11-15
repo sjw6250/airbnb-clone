@@ -1,7 +1,9 @@
-from django.views.generic import FormView
-from django.urls import reverse_lazy
-from django.shortcuts import redirect, reverse
+from users import models
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, reverse
+from django.urls import reverse_lazy
+from django.views.generic import FormView, DetailView
+
 from . import forms
 
 
@@ -21,6 +23,7 @@ class LoginView(FormView):
 
 
 def log_out(request):
+    messages.info(request, f"See you later")
     logout(request)
     return redirect(reverse("core:home"))
 
@@ -40,3 +43,15 @@ class SignUpView(FormView):
         if user is not None:
             login(self.request, user)
         return super().form_valid(form)
+
+
+class UserProfileView(DetailView):
+
+    model = models.User
+    context_object_name = "user_obj"
+
+    # context 에 값을 주면 html 파일에서 {{hello}} 이렇게 써서 TEST를 출력 가능
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["hello"] = "TEST"
+    #     return context
