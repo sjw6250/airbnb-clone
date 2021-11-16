@@ -1,3 +1,4 @@
+from django.views.generic.edit import UpdateView
 from users import models
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, reverse
@@ -55,3 +56,27 @@ class UserProfileView(DetailView):
     #     context = super().get_context_data(**kwargs)
     #     context["hello"] = "TEST"
     #     return context
+
+
+# 21.6 Django 에는 UpdateView 가 존재한다
+class UpdateProfileView(UpdateView):
+
+    # 21.6 모델은 models.py의 User 클래스를 이용한다.
+    model = models.User
+    # 21.6 템플릿을 html 파일로 만들어주고
+    template_name = "users/update-profile.html"
+    fields = (
+        "first_name",
+        "last_name",
+        "avatar",
+        "gender",
+        "bio",
+        "birthdate",
+        "language",
+        "currency",
+    )
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    # 21.6 업데이트를 모두 끝내면 get_absolute_url 까지 호출해서 마무리 해준다
