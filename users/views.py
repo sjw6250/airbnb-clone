@@ -3,6 +3,7 @@ from users import models
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, reverse
 from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import FormView, DetailView
 
 from . import forms
@@ -59,6 +60,7 @@ class UserProfileView(DetailView):
 
 
 # 21.6 Django 에는 UpdateView 가 존재한다
+# 21.6 업데이트를 모두 끝내면 get_absolute_url 까지 호출해서 마무리 해준다
 class UpdateProfileView(UpdateView):
 
     # 21.6 모델은 models.py의 User 클래스를 이용한다.
@@ -68,7 +70,6 @@ class UpdateProfileView(UpdateView):
     fields = (
         "first_name",
         "last_name",
-        "avatar",
         "gender",
         "bio",
         "birthdate",
@@ -79,4 +80,15 @@ class UpdateProfileView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
-    # 21.6 업데이트를 모두 끝내면 get_absolute_url 까지 호출해서 마무리 해준다
+    # 21.7 form validation sample
+    # def form_valid(self, form):
+    #     email = form.cleaned_data.get("email")
+    #     self.object.username = email
+    #     self.object.save()
+    #     return super().form_valid(form)
+
+
+# 21.7 https://ccbv.co.uk/ 여기 가면 어떤게 있는지 다 나옴 view에 대해
+class UpdatePasswordView(PasswordChangeView):
+
+    template_name = "users/update-password.html"
