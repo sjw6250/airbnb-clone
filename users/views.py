@@ -1,15 +1,18 @@
-from django.views.generic.edit import UpdateView
-from users import models
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, reverse
 from django.urls import reverse_lazy
-from django.contrib.auth.views import PasswordChangeView
-from django.views.generic import FormView, DetailView
+from django.views.generic import DetailView, FormView
+from django.views.generic.edit import UpdateView
 
-from . import forms
+from users import models
+
+from . import forms, mixins, models
 
 
-class LoginView(FormView):
+class LoginView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/login.html"
     form_class = forms.LoginForm
@@ -30,7 +33,7 @@ def log_out(request):
     return redirect(reverse("core:home"))
 
 
-class SignUpView(FormView):
+class SignUpView(mixins.LoggedOutOnlyView, FormView):
 
     template_name = "users/signup.html"
     form_class = forms.SignUpForm
@@ -61,7 +64,7 @@ class UserProfileView(DetailView):
 
 # 21.6 Django 에는 UpdateView 가 존재한다
 # 21.6 업데이트를 모두 끝내면 get_absolute_url 까지 호출해서 마무리 해준다
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(SuccessMessageMixin, UpdateView):  # 21.9 Mixin 추가를 통해 메세지 띄워줌
 
     # 21.6 모델은 models.py의 User 클래스를 이용한다.
     model = models.User
@@ -77,8 +80,18 @@ class UpdateProfileView(UpdateView):
         "currency",
     )
 
+    # 21.9 클래스 생성할때 믹스인 추가하고 메세지만 넣어주면 됨
+    success_message = "Profile Updated"
+
     def get_object(self, queryset=None):
         return self.request.user
+
+    # 21.8 UpdateView 만 이용하면 커스터마이징이 힘들고 고정되어있는데 아래를 이용해서 커스텀한다.
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["birthdate"].widget.attrs = {"placeholder": "Birthdate"}
+        form.fields["first_name"].widget.attrs = {"placeholder": "First name"}
+        return form
 
     # 21.7 form validation sample
     # def form_valid(self, form):
@@ -89,6 +102,20 @@ class UpdateProfileView(UpdateView):
 
 
 # 21.7 https://ccbv.co.uk/ 여기 가면 어떤게 있는지 다 나옴 view에 대해
-class UpdatePasswordView(PasswordChangeView):
+class UpdatePasswordView(SuccessMessageMixin, PasswordChangeView):
 
     template_name = "users/update-password.html"
+    success_message = "Password Updated"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old_password"].widget.attrs = {"placeholder": "Current password"}
+        form.fields["new_password1"].widget.attrs = {"placeholder": "New password"}
+        form.fields["new_password2"].widget.attrs = {
+            "placeholder": "Confirm new password"
+        }
+        return form
+
+    # 21.9 패스워드 변경 성공하고 absolute url로 이동
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()

@@ -14,5 +14,5 @@ urlpatterns = [
     # 그리고 name의 update 를 html에서 {% url 'users:update' %} 이런 식으로 호출한다.
     path("update-profile/", views.UpdateProfileView.as_view(), name="update"),
     # 21.7 패스워드 변경
-    path("update-passwod/", views.UpdatePasswordView.as_view(), name="password"),
+    path("update-password/", views.UpdatePasswordView.as_view(), name="password"),
 ]
