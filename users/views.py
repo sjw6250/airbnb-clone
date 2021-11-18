@@ -26,6 +26,14 @@ class LoginView(mixins.LoggedOutOnlyView, FormView):
             login(self.request, user)
         return super().form_valid(form)
 
+    # 21.10 로그인에 성공하면 get 파라미터로 담겨있는 next 변수(원래 있던 페이지)로 보내거나 없으면 home으로 보냄
+    def get_success_url(self):
+        next_arg = self.request.GET.get("next")
+        if next_arg is not None:
+            return next_arg
+        else:
+            return reverse("core:home")
+
 
 def log_out(request):
     messages.info(request, f"See you later")
@@ -64,7 +72,9 @@ class UserProfileView(DetailView):
 
 # 21.6 Django 에는 UpdateView 가 존재한다
 # 21.6 업데이트를 모두 끝내면 get_absolute_url 까지 호출해서 마무리 해준다
-class UpdateProfileView(SuccessMessageMixin, UpdateView):  # 21.9 Mixin 추가를 통해 메세지 띄워줌
+class UpdateProfileView(
+    mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView
+):  # 21.9 Mixin 추가를 통해 메세지 띄워줌
 
     # 21.6 모델은 models.py의 User 클래스를 이용한다.
     model = models.User
@@ -102,7 +112,12 @@ class UpdateProfileView(SuccessMessageMixin, UpdateView):  # 21.9 Mixin 추가�
 
 
 # 21.7 https://ccbv.co.uk/ 여기 가면 어떤게 있는지 다 나옴 view에 대해
-class UpdatePasswordView(SuccessMessageMixin, PasswordChangeView):
+class UpdatePasswordView(
+    mixins.LoggedInOnlyView,  # 21.10 로그인이 안되어 있으면 로그인 페이지로 이동 시키기 위해 추가
+    # 21.10 mixins.EmailLoginOnlyView, 이메일 로그인이 아니면 안되게 하기
+    SuccessMessageMixin,
+    PasswordChangeView,
+):
 
     template_name = "users/update-password.html"
     success_message = "Password Updated"
